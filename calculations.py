@@ -13,6 +13,7 @@ class Board:
             self.data[i] = " "
         self.moves = ""
         self.winner = None
+        self.frees = list (range (9))
 
     def check_win (self):
         for clique in self.cliques:
@@ -47,6 +48,8 @@ class Board:
                     ans += " " + self.data[position]
         return ans
 
+    def next_free (self):
+        return self.frees[0]
 
     def generate_random (self, turn, num_moves): #generates a board using random values
         if num_moves > 9 or self.check_win (): #either ended in a draw or a single winner
@@ -61,16 +64,50 @@ class Board:
             else:
                 if turn == 0:
                     self.data[spot] = "x"
+                    self.frees.remove (spot)
                     self.moves += str (spot) + " x\n"
                     # self.print_board ()
                     # print ('\n')
                     self.generate_board (1, num_moves + 1)
                 else:
                     self.data[spot] = "o"
+                    self.frees.remove (spot)
                     self.moves += str (spot) + " o\n"
                     # self.print_board ()
                     # print ('\n')
                     self.generate_board (0, num_moves + 1)
+
+def solve ():
+    all_boards = set ()
+    for i in range (9):
+        b = Board ()
+        b.data[i] = 'x'
+        b.frees.remove (i)
+        solve_help (b, i, i + 1, 1, all_boards)
+    return (len (all_boards))
+
+def solve_help (board, start, position, turn, allboards):
+    if len (board.frees) == 0:
+        all_boards.add (board)
+        return True
+
+    if position > 8 or board.check_win  ():
+        allboards.add (board)
+        new = Board ()
+        new.data[start] = 'x'
+        solve_help (new, start, 0, 1, allboards)
+    else:
+        if turn == 0:
+            board.data[position] = 'x'
+            board.frees.remove (position)
+            solve_help (board, start, board.next_free(), 1, allboards)
+            solve_help (board, start, board.next_free(), 0, allboards)
+        else:
+            board.data[position] = 'o'
+            board.frees.remove (position)
+            solve_help (board, start, board.next_free(), 0, allboards)
+            solve_help (board, start, board.next_free(), 1, allboards)
+
 
 def generate_start (board, starting_position, position_now, turn, all_boards):
     if starting_position >= 9:
@@ -85,6 +122,7 @@ def generate_start (board, starting_position, position_now, turn, all_boards):
         else:
             if turn == 0:
                 board.data[position_now] = "x"
+                generate_start (board, starting_position, position_now + 1, 1, all_boards)
                 num = position_now
                 while (num < 9):
                     generate_start (board, starting_position, num, 1, all_boards)
@@ -93,6 +131,7 @@ def generate_start (board, starting_position, position_now, turn, all_boards):
                 #generate_start (board, starting_position, position_now + 1, 0, all_boards)
             else:
                 board.data[position_now] = "o"
+                generate_start (board, starting_position, position_now + 1, 0, all_boards)
                 num = position_now
                 while (num < 9):
                     generate_start (board, starting_position, num, 0, all_boards)
@@ -100,7 +139,7 @@ def generate_start (board, starting_position, position_now, turn, all_boards):
                 #generate_start (board, starting_position, position_now + 1, 0, all_boards)
                 #generate_start (board, starting_position, position_now + 1, 1, all_boards)
 
-
+solve ()
 
 all_boards = set () #key = board value = count
 def unique_boards (num):
@@ -140,10 +179,12 @@ def unique_boards (num):
 #         print (el)
 #         print ()
 
-new_board = Board ()
-ab = set ()
-generate_start (new_board, 0,0,0,ab)
-print (len (ab))
+# new_board = Board ()
+# ab = set ()
+# generate_start (new_board, 0,0,0,ab)
+# print (len (ab))
+b = Board ()
+print (b.frees)
 # for el in ab:
 #     print (el)
 #     print ()
