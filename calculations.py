@@ -72,31 +72,33 @@ class Board:
                     # print ('\n')
                     self.generate_board (0, num_moves + 1)
 
-def generate_start (board, starting_position, turn, all_boards):
-    if starting_position > 8 or board.check_win ():
+def generate_start (board, starting_position, position_now, turn, all_boards):
+    if starting_position >= 9:
+        return all_boards
+    if position_now > 8 or board.check_win ():
         all_boards.add (board.to_string())
+        new = Board ()
+        generate_start (new, starting_position + 1, 0, 0, all_boards)
     else:
-        if board.data[starting_position] != " ":
-            generate_start (board, starting_position + 1, turn, all_boards)
+        if board.data[position_now] != " ":
+            generate_start (board, starting_position, position_now + 1, turn, all_boards)
         else:
             if turn == 0:
-                board.data[starting_position] = "x"
-                num = starting_position
+                board.data[position_now] = "x"
+                num = position_now
                 while (num < 9):
-                    generate_start (board, num, 1, all_boards)
-                    generate_start (board, num + 1, 0, all_boards)
-                    num += 1
-                # generate_start (board, starting_position + 1, 1, all_boards)
-                # generate_start (board, starting_position + 1, 0, all_boards)
+                    generate_start (board, starting_position, num, 1, all_boards)
+                    #generate_start (board, starting_position, num + 1, 0, all_boards)
+                #generate_start (board, starting_position, position_now + 1, 1, all_boards)
+                #generate_start (board, starting_position, position_now + 1, 0, all_boards)
             else:
-                board.data[starting_position] = "o"
-                num = starting_position
+                board.data[position_now] = "o"
+                num = position_now
                 while (num < 9):
-                    generate_start (board, num, 0, all_boards)
-                    generate_start (board, num + 1, 1, all_boards)
-                    num += 1
-                # generate_start (board, starting_position + 1, 0, all_boards)
-                # generate_start (board, starting_position + 1, 1, all_boards)
+                    generate_start (board, starting_position, num, 0, all_boards)
+                    #generate_start (board, starting_position, num + 1, 1, all_boards)
+                #generate_start (board, starting_position, position_now + 1, 0, all_boards)
+                #generate_start (board, starting_position, position_now + 1, 1, all_boards)
 
 
 
@@ -129,12 +131,22 @@ def unique_boards (num):
     # else:
     #     return num
 
+# for i in range (9):
+#     print ("Start: ", i)
+#     new_board = Board ()
+#     ab = set ()
+#     generate_start (new_board, i, 0, ab)
+#     for el in ab:
+#         print (el)
+#         print ()
+
 new_board = Board ()
 ab = set ()
-generate_start (new_board, 0, 0, ab)
-for el in ab:
-    print (el)
-
+generate_start (new_board, 0,0,0,ab)
+print (len (ab))
+# for el in ab:
+#     print (el)
+#     print ()
 #unique_boards (1)
 
 # a = Board()
