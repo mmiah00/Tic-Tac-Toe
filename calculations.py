@@ -35,6 +35,19 @@ class Board:
                     ans += " " + self.data[position]
         print (ans)
 
+    def to_string (self):
+        ans = ''
+        for position in self.data.keys ():
+            if position == 0 or position == 1 or position == 3 or position == 4 or position == 6 or position == 7:
+                ans += " " + self.data[position] + " |"
+            else:
+                if position != 8:
+                    ans += " " + self.data[position] + "\n-----------\n"
+                else:
+                    ans += " " + self.data[position]
+        return ans
+
+
     def generate_random (self, turn, num_moves): #generates a board using random values
         if num_moves > 9 or self.check_win (): #either ended in a draw or a single winner
             #print ("DONE")
@@ -59,42 +72,31 @@ class Board:
                     # print ('\n')
                     self.generate_board (0, num_moves + 1)
 
-def solve ():
-    all_boards = set ()
-    for i in range (9):
-        solve_helper (Board (), i, 0, all_boards)
-
-    print (len (all_boards))
-
-def solve_helper (board, start_position, turn, allboards):
-    if start_position >= 9 or board.check_win ():
-        allboards.add (board)
-        #return allboards
+def generate_start (board, starting_position, turn, all_boards):
+    if starting_position > 8 or board.check_win ():
+        all_boards.add (board.to_string())
     else:
-        if (board.data[start_position] == " "):
+        if board.data[starting_position] != " ":
+            generate_start (board, starting_position + 1, turn, all_boards)
+        else:
             if turn == 0:
-                board.data[start_position] = "x"
-                num = start_position
+                board.data[starting_position] = "x"
+                num = starting_position
                 while (num < 9):
-                    solve_helper (board, num, 1, allboards)
+                    generate_start (board, num, 1, all_boards)
+                    generate_start (board, num + 1, 0, all_boards)
                     num += 1
-                #return solve_helper (board, start_position + 1, 1, allboards)
-                #solve_helper (board, start_position + 2, 0, allboards)
+                # generate_start (board, starting_position + 1, 1, all_boards)
+                # generate_start (board, starting_position + 1, 0, all_boards)
             else:
-                board.data[start_position] = "o"
-                num = start_position
+                board.data[starting_position] = "o"
+                num = starting_position
                 while (num < 9):
-                    solve_helper (board, num, 0, allboards)
+                    generate_start (board, num, 0, all_boards)
+                    generate_start (board, num + 1, 1, all_boards)
                     num += 1
-                #return solve_helper (board, start_position + 1, 0, allboards)
-                #solve_helper (board, start_position + 2, 1, allboards)
-
-
-
-
-
-
-
+                # generate_start (board, starting_position + 1, 0, all_boards)
+                # generate_start (board, starting_position + 1, 1, all_boards)
 
 
 
@@ -127,9 +129,13 @@ def unique_boards (num):
     # else:
     #     return num
 
+new_board = Board ()
+ab = set ()
+generate_start (new_board, 0, 0, ab)
+for el in ab:
+    print (el)
 
 #unique_boards (1)
-solve ()
 
 # a = Board()
 # a.generate_board (0, 1)
