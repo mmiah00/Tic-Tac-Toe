@@ -110,8 +110,6 @@ def solve_help (board, start, position, turn, allboards):
 
 
 def generate_start (board, starting_position, position_now, turn, all_boards):
-    if starting_position >= 9:
-        return all_boards
     if position_now > 8 or board.check_win ():
         all_boards.add (board.to_string())
         new = Board ()
