@@ -37,14 +37,11 @@ class Board:
 
     def to_string (self):
         ans = ''
-        for position in self.data.keys ():
-            if position == 0 or position == 1 or position == 3 or position == 4 or position == 6 or position == 7:
-                ans += " " + self.data[position] + " |"
+        for pos in self.data.keys ():
+            if self.data[pos] == " ":
+                ans += '_'
             else:
-                if position != 8:
-                    ans += " " + self.data[position] + "\n-----------\n"
-                else:
-                    ans += " " + self.data[position]
+                ans += self.data[pos]
         return ans
 
 
@@ -62,8 +59,9 @@ def ABC(): #answers to parts a, b, and c
         available2.remove(x1)
         first.data[x1] = 'x'
 
-        total_strings.add(first.to_string ())
-        total_boards.add (first)
+        if first.to_string () not in total_strings:
+            total_strings.add(first.to_string ())
+            total_boards.add (first)
         for o1 in available2:
             second = copy.deepcopy (first)
             available3 = available2[:]
@@ -71,8 +69,9 @@ def ABC(): #answers to parts a, b, and c
 
             second.data[o1] = 'o'
 
-            total_strings.add(second.to_string ())
-            total_boards.add (second)
+            if second.to_string () not in total_strings:
+                total_strings.add(second.to_string ())
+                total_boards.add (second)
             for x2 in available3:
                 third = copy.deepcopy (second)
                 available4 = available3[:]
@@ -80,8 +79,9 @@ def ABC(): #answers to parts a, b, and c
 
                 third.data[x2] = 'x'
 
-                total_strings.add(third.to_string ())
-                total_boards.add (third)
+                if third.to_string () not in total_strings:
+                    total_strings.add(third.to_string ())
+                    total_boards.add (third)
                 for o2 in available4:
                     fourth = copy.deepcopy (third)
                     available5 = available4[:]
@@ -89,8 +89,9 @@ def ABC(): #answers to parts a, b, and c
 
                     fourth.data[o2] = 'o'
 
-                    total_strings.add(fourth.to_string ())
-                    total_boards.add (fourth)
+                    if fourth.to_string () not in total_strings:
+                        total_strings.add(fourth.to_string ())
+                        total_boards.add (fourth)
                     for x3 in available5:
                         fifth = copy.deepcopy (fourth)
                         available6 = available5[:]
@@ -98,8 +99,9 @@ def ABC(): #answers to parts a, b, and c
 
                         fifth.data[x3] = 'x'
 
-                        total_strings.add(fifth.to_string ())
-                        total_boards.add (fifth)
+                        if first.to_string () not in total_strings:
+                            total_strings.add(fifth.to_string ())
+                            total_boards.add (fifth)
                         if fifth.check_win ():
                             total_games += 1
                             x_wins+=1
@@ -111,8 +113,9 @@ def ABC(): #answers to parts a, b, and c
 
                                 sixth.data[o3] = 'o'
 
-                                total_strings.add(sixth.to_string ())
-                                total_boards.add (sixth)
+                                if sixth.to_string () not in total_strings:
+                                    total_strings.add(sixth.to_string ())
+                                    total_boards.add (sixth)
                                 if sixth.check_win ():
 
                                     total_games+=1
@@ -125,8 +128,9 @@ def ABC(): #answers to parts a, b, and c
 
                                         seventh.data[x4] = 'x'
 
-                                        total_strings.add(seventh.to_string ())
-                                        total_boards.add (seventh)
+                                        if seventh.to_string () not in total_strings:
+                                            total_strings.add(seventh.to_string ())
+                                            total_boards.add (seventh)
                                         if seventh.check_win ():
 
                                             total_games += 1
@@ -138,8 +142,9 @@ def ABC(): #answers to parts a, b, and c
                                                 available1.remove(o4)
                                                 eigth.data[o4] = 'o'
 
-                                                total_strings.add(eigth.to_string ())
-                                                total_boards.add (eigth)
+                                                if eigth.to_string () not in total_strings:
+                                                    total_strings.add(eigth.to_string ())
+                                                    total_boards.add (eigth)
                                                 if eigth.check_win ():
 
                                                     total_games+=1
@@ -147,8 +152,9 @@ def ABC(): #answers to parts a, b, and c
                                                 else:
                                                     eigth.data[available1[0]] = 'x'
 
-                                                    total_strings.add(eigth.to_string ())
-                                                    total_boards.add (eigth)
+                                                    if first.to_string () not in total_strings:
+                                                        total_strings.add(eigth.to_string ())
+                                                        total_boards.add (eigth)
                                                     if eigth.check_win ():
 
                                                         x_wins+=1
@@ -156,7 +162,7 @@ def ABC(): #answers to parts a, b, and c
                                                         draws+=1
                                                     total_games+=1
     print ("Total Games: ", total_games, "\nX Won ", x_wins, "times\nO Won ", o_wins, "times\n", draws, " draws\nDifferent Configurations: ", len (total_strings))
-    return total_boards
+    return total_boards, total_strings
 
 def make_transformation (board, transformation):
     ans = Board ()
@@ -167,36 +173,47 @@ def make_transformation (board, transformation):
         # print ()
     return ans
 
-def without_transformation(set_boards):
+def without_transformation(set_boards, set_strings):
     Rot90 = [6,3,0,7,4,1,8,5,2]
     Rot180 = [8,7,6,5,4,3,2,1,0]
     Rot270 = [2,5,8,1,4,7,0,3,6]
     VertFlip= [2,1,0,5,4,3,8,7,6]
     Transformations = [[Rot90],[Rot180],[Rot270],[VertFlip],[Rot90,VertFlip],[Rot180,VertFlip],[Rot270,VertFlip]]
 
-    ans = copy.copy (set_boards)
+    b = copy.copy (set_strings)
+    a = copy.copy (set_boards)
+    ans = set()
     for board in set_boards:
-        r90 = make_transformation (board, Rot90)
-        r180 = make_transformation (board, Rot180)
-        r270 = make_transformation (board, Rot270)
-        vert = make_transformation (board, VertFlip)
-        if r90 in ans:
-            ans.remove (r90)
-        if r180 in ans:
-            ans.remove (r180)
-        if r270 in ans:
-            ans.remove (r270)
-        if vert in ans:
-            ans.remove (vert)
+        r90 = make_transformation (board, Rot90)#.to_string()
+        r180 = make_transformation (board, Rot180)#.to_string()
+        r270 = make_transformation (board, Rot270)#.to_string()
+        vert = make_transformation (board, VertFlip)#.to_string()
+        r90vert = make_transformation (r90, VertFlip)
+        r180vert = make_transformation (r180, VertFlip)
+        r270vert = make_transformation (r270, VertFlip)
 
-        # r90vert = make_transformation (r90, VertFlip)
-        # r180vert = make_transformation (r180, VertFlip)
-        # r270vert = make_transformation (r270, VertFlip)
-        # if r90vert in ans:
+        r90_string = r90.to_string ()
+        r180_string = r180.to_string ()
+        r270_string = r270.to_string ()
+        vert_string = vert.to_string ()
+        r90vert_string = r90vert.to_string ()
+        r180vert_string = r180vert.to_string ()
+        r270vert_string = r270vert.to_string ()
+        if r90_string not in b or r180_string not in b or r270_string not in b or vert_string not in b or r90vert_string not in b or r180vert_string not in b or r270vert_string not in b:
+            ans.add (board)
+        # if r90 in b:
+        #     ans.remove (r90)
+        # if r180 in b:
+        #     ans.remove (r180)
+        # if r270 in b:
+        #     ans.remove (r270)
+        # if vert in b:
+        #     ans.remove (vert)
+        # if r90vert in b:
         #     ans.remove (r90vert)
-        # if r180vert in ans:
+        # if r180vert in b:
         #     ans.remove (r180vert)
-        # if r270vert in ans:
+        # if r270vert in b:
         #     ans.remove (r270vert)
 
         # for transform in Transformations:
@@ -259,7 +276,7 @@ def D(total_boards): #take the set from A
 
 def main():
     tb = ABC()
-    #print ("D: ", len (without_transformation (tb)))
+    print ("D: ", len (without_transformation (tb[0], tb[1])))
 
     #print ("A: ", total_games, "B1: ", x_wins, "B2: ", o_wins, "B3: ", draws, "C: ", len(total_strings))
     # a, b1, b2, b3, c, total_boards = A()
