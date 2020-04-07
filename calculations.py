@@ -97,16 +97,31 @@ def solve_help (board, start, position, turn, allboards):
         new.data[start] = 'x'
         solve_help (new, start, 0, 1, allboards)
     else:
-        if turn == 0:
-            board.data[position] = 'x'
-            board.frees.remove (position)
-            solve_help (board, start, board.next_free(), 1, allboards)
-            solve_help (board, start, board.next_free(), 0, allboards)
+        if position in board.frees:
+            if turn == 0:
+                board.data[position] = 'x'
+                board.frees.remove (position)
+                copee = copy.deepcopy (board)
+                generate_start (board, start, position + 1, 1, allboards)
+                generate_start (copee, start, position + 1, 0, allboards)
+            else:
+                board.data[position] = 'o'
+                board.frees.remove (position)
+                copee = copy.deepcopy (board)
+                generate_start (board, start, position + 1, 0, allboards)
+                generate_start (copee, start, position + 1, 1, allboards)
         else:
-            board.data[position] = 'o'
-            board.frees.remove (position)
-            solve_help (board, start, board.next_free(), 0, allboards)
-            solve_help (board, start, board.next_free(), 1, allboards)
+            generate_start (board, start, position + 1, turn, allboards)
+        # if turn == 0:
+        #     board.data[position] = 'x'
+        #     board.frees.remove (position)
+        #     solve_help (board, start, board.next_free(), 1, allboards)
+        #     solve_help (board, start, board.next_free(), 0, allboards)
+        # else:
+        #     board.data[position] = 'o'
+        #     board.frees.remove (position)
+        #     solve_help (board, start, board.next_free(), 0, allboards)
+        #     solve_help (board, start, board.next_free(), 1, allboards)
 
 
 def generate_start (board, starting_position, position_now, turn, all_boards):
