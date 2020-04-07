@@ -56,100 +56,100 @@ def ABC(): #answers to parts a, b, and c
     x_wins = 0
     draws = 0
     for x1 in range(9):
-        board9 = Board()
-        available9 = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        available8 = available9[:]
-        available8.remove(x1)
-        board9.data[x1] = 'x'
+        first = Board()
+        available1 = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        available2 = available1[:]
+        available2.remove(x1)
+        first.data[x1] = 'x'
 
-        total_strings.add(board9.to_string ())
-        total_boards.add (board9)
-        for o1 in available8:
-            board8 = copy.deepcopy (board9)
-            available7 = available8[:]
-            available7.remove(o1)
+        total_strings.add(first.to_string ())
+        total_boards.add (first)
+        for o1 in available2:
+            second = copy.deepcopy (first)
+            available3 = available2[:]
+            available3.remove(o1)
 
-            board8.data[o1] = 'o'
+            second.data[o1] = 'o'
 
-            total_strings.add(board8.to_string ())
-            total_boards.add (board8)
-            for x2 in available7:
-                board7 = copy.deepcopy (board8)
-                available6 = available7[:]
-                available6.remove(x2)
+            total_strings.add(second.to_string ())
+            total_boards.add (second)
+            for x2 in available3:
+                third = copy.deepcopy (second)
+                available4 = available3[:]
+                available4.remove(x2)
 
-                board7.data[x2] = 'x'
+                third.data[x2] = 'x'
 
-                total_strings.add(board7.to_string ())
-                total_boards.add (board7)
-                for o2 in available6:
-                    board6 = copy.deepcopy (board7)
-                    available5 = available6[:]
+                total_strings.add(third.to_string ())
+                total_boards.add (third)
+                for o2 in available4:
+                    fourth = copy.deepcopy (third)
+                    available5 = available4[:]
                     available5.remove(o2)
 
-                    board6.data[o2] = 'o'
+                    fourth.data[o2] = 'o'
 
-                    total_strings.add(board6.to_string ())
-                    total_boards.add (board6)
+                    total_strings.add(fourth.to_string ())
+                    total_boards.add (fourth)
                     for x3 in available5:
-                        board5 = copy.deepcopy (board6)
-                        available4 = available5[:]
-                        available4.remove(x3)
+                        fifth = copy.deepcopy (fourth)
+                        available6 = available5[:]
+                        available6.remove(x3)
 
-                        board5.data[x3] = 'x'
+                        fifth.data[x3] = 'x'
 
-                        total_strings.add(board5.to_string ())
-                        total_boards.add (board5)
-                        if board5.check_win ():
+                        total_strings.add(fifth.to_string ())
+                        total_boards.add (fifth)
+                        if fifth.check_win ():
                             total_games += 1
                             x_wins+=1
                         else:
-                            for o3 in available4:
-                                board4 = copy.deepcopy (board5)
-                                available3 = available4[:]
-                                available3.remove(o3)
+                            for o3 in available6:
+                                sixth = copy.deepcopy (fifth)
+                                available7 = available6[:]
+                                available7.remove(o3)
 
-                                board4.data[o3] = 'o'
+                                sixth.data[o3] = 'o'
 
-                                total_strings.add(board4.to_string ())
-                                total_boards.add (board4)
-                                if board4.check_win ():
+                                total_strings.add(sixth.to_string ())
+                                total_boards.add (sixth)
+                                if sixth.check_win ():
 
                                     total_games+=1
                                     o_wins+=1
                                 else:
-                                    for x4 in available3:
-                                        board3 = copy.deepcopy (board4)
-                                        available2 = available3[:]
-                                        available2.remove(x4)
+                                    for x4 in available7:
+                                        seventh = copy.deepcopy (sixth)
+                                        available8 = available7[:]
+                                        available8.remove(x4)
 
-                                        board3.data[x4] = 'x'
+                                        seventh.data[x4] = 'x'
 
-                                        total_strings.add(board3.to_string ())
-                                        total_boards.add (board3)
-                                        if board3.check_win ():
+                                        total_strings.add(seventh.to_string ())
+                                        total_boards.add (seventh)
+                                        if seventh.check_win ():
 
                                             total_games += 1
                                             x_wins+=1
                                         else:
-                                            for o4 in available2:
-                                                board2 = copy.deepcopy (board3)
+                                            for o4 in available8:
+                                                eigth = copy.deepcopy (seventh)
                                                 available1 = available2[:]
                                                 available1.remove(o4)
-                                                board2.data[o4] = 'o'
+                                                eigth.data[o4] = 'o'
 
-                                                total_strings.add(board2.to_string ())
-                                                total_boards.add (board2)
-                                                if board2.check_win ():
+                                                total_strings.add(eigth.to_string ())
+                                                total_boards.add (eigth)
+                                                if eigth.check_win ():
 
                                                     total_games+=1
                                                     o_wins+=1
                                                 else:
-                                                    board2.data[available1[0]] = 'x'
+                                                    eigth.data[available1[0]] = 'x'
 
-                                                    total_strings.add(board2.to_string ())
-                                                    total_boards.add (board2)
-                                                    if board2.check_win ():
+                                                    total_strings.add(eigth.to_string ())
+                                                    total_boards.add (eigth)
+                                                    if eigth.check_win ():
 
                                                         x_wins+=1
                                                     else:
@@ -158,6 +158,15 @@ def ABC(): #answers to parts a, b, and c
     print ("Total Games: ", total_games, "\nX Won ", x_wins, "times\nO Won ", o_wins, "times\n", draws, " draws\nDifferent Configurations: ", len (total_strings))
     return total_boards
 
+def make_transformation (board, transformation):
+    ans = Board ()
+    for i in range (8):
+        val = board.data[i]
+        ans.data[transformation[i]] = val
+        # ans.print_board ()
+        # print ()
+    return ans
+
 def without_transformation(set_boards):
     Rot90 = [6,3,0,7,4,1,8,5,2]
     Rot180 = [8,7,6,5,4,3,2,1,0]
@@ -165,13 +174,45 @@ def without_transformation(set_boards):
     VertFlip= [2,1,0,5,4,3,8,7,6]
     Transformations = [[Rot90],[Rot180],[Rot270],[VertFlip],[Rot90,VertFlip],[Rot180,VertFlip],[Rot270,VertFlip]]
 
-    ans = set ()
+    ans = copy.copy (set_boards)
     for board in set_boards:
-        for trans in transformations:
-            for i in range (9):
-                if board.data[i] == board.data[trans[i]]:
-                    ans.add (board.to_string())
+        r90 = make_transformation (board, Rot90)
+        r180 = make_transformation (board, Rot180)
+        r270 = make_transformation (board, Rot270)
+        vert = make_transformation (board, VertFlip)
+        if r90 in ans:
+            ans.remove (r90)
+        if r180 in ans:
+            ans.remove (r180)
+        if r270 in ans:
+            ans.remove (r270)
+        if vert in ans:
+            ans.remove (vert)
+
+        # r90vert = make_transformation (r90, VertFlip)
+        # r180vert = make_transformation (r180, VertFlip)
+        # r270vert = make_transformation (r270, VertFlip)
+        # if r90vert in ans:
+        #     ans.remove (r90vert)
+        # if r180vert in ans:
+        #     ans.remove (r180vert)
+        # if r270vert in ans:
+        #     ans.remove (r270vert)
+
+        # for transform in Transformations:
+        #     trans = make_transformation (board, transform)
+        #     if trans in ans:
+        #         ans.remove (trans)
     return ans
+
+    # ans = set ()
+    # for board in set_boards:
+    #     for trans in transformations:
+    #         for i in range (9):
+    #             if board.data[i] == board.data[trans[i]]:
+    #                 ans.add (board.to_string())
+    # return ans
+
     # tr = set()
     # length = len(set_boards)
     # list_boards = list(set_boards)
@@ -218,9 +259,12 @@ def D(total_boards): #take the set from A
 
 def main():
     tb = ABC()
+    #print ("D: ", len (without_transformation (tb)))
+
     #print ("A: ", total_games, "B1: ", x_wins, "B2: ", o_wins, "B3: ", draws, "C: ", len(total_strings))
     # a, b1, b2, b3, c, total_boards = A()
     # print("A: %d \t B1: %d \t B2: %d \t B3: %d \t C: %d"%(a, b1, b2, b3, c))
-    print("D: %d"%D(tb))
+
+    #print("D: %d"%D(tb))
 
 main()
