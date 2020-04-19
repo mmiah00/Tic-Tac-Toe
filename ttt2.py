@@ -46,6 +46,16 @@ def replace (character, position, layout):
     s[position] = character
     return "".join (s)
 
+# def CreateAllBoards (layout, parent): #parent is a BoardNode
+#     if parent.checkwin ():
+#         AllBoards[layout] = parent
+#     if '_' not in layout: #board w all spaces filled
+#         parent.endState = 'd'
+#         AllBoards[layout] = parent
+#     else:
+#         for i in range (9):
+#             replace ('x', i, layout)
+
 def CreateAllBoards (layout, parent): #parent is a BoardNode
     if parent.checkwin ():
         AllBoards[layout] = parent
@@ -60,16 +70,16 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
             if layout.count ('x') == 0 or layout.count ('x') == layout.count ('o'): #x's turn
                 b = copy.copy (parent)
                 parent.children.append (b)
-                replace ('x', position, b.layout)
-                # replace ('o', position, layout)
-                # CreateAllBoards (layout, parent)
+                b.layout = replace ('x', position, b.layout)
+                # l = replace ('o', position, layout)
+                # CreateAllBoards (l, parent)
                 CreateAllBoards (b.layout, b)
             else: #o's turn
                 b = copy.copy (parent)
                 parent.children.append (b)
-                replace ('o', position, b.layout)
-                # replace ('x', position, layout)
-                # CreateAllBoards (layout, parent)
+                b.layout = replace ('o', position, b.layout)
+                # l = replace ('x', position, layout)
+                # CreateAllBoards (l, parent)
                 CreateAllBoards (b.layout, b)
 
 CreateAllBoards ('_________', BoardNode ('_________'))
