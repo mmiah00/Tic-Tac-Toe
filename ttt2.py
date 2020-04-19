@@ -51,20 +51,24 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
         AllBoards[layout] = parent
     if '_' not in layout: #board w all spaces filled
         parent.endState = 'd'
-        AllBoards[layout] = board
+        AllBoards[layout] = parent
     else:
         opens = all_opens (layout)
         for position in opens:
             if layout.count ('x') > layout.count ('o'): #o's turn
-                b = copy.copy (board)
+                b = copy.copy (parent)
                 parent.children.append (b)
                 replace ('o', position, b.layout)
-                CreateAllBoards (b.layout, board)
+                # replace ('o', position, layout)
+                # CreateAllBoards (layout, parent)
+                CreateAllBoards (b.layout, b)
             else: #x's turn
-                b = copy.copy (board)
+                b = copy.copy (parent)
                 parent.children.append (b)
-                replace ('o', position, b.layout)
-                CreateAllBoards (b.layout, board)
+                replace ('x', position, b.layout)
+                # replace ('x', position, layout)
+                # CreateAllBoards (layout, parent)
+                CreateAllBoards (b.layout, b)
 
 CreateAllBoards ('_________', BoardNode ('_________'))
 print (len (AllBoards))
