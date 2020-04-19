@@ -25,24 +25,44 @@ class BoardNode:
         print ('children:',self.children)
 
     def checkwin (self):
-        for clique in wins:
-            if self.layout[wins[0]] == self.layout[wins[1]] and self.layout[wins[1]] == self.layout[wins[2]] and self.layout[wins[0]] == self.layout[wins[2]]:
-                self.endState = self.layout[wins[0]]
+        for clique in Wins:
+            if self.layout[Wins[0]] == self.layout[Wins[1]] and self.layout[Wins[1]] == self.layout[Wins[2]] and self.layout[Wins[0]] == self.layout[Wins[2]]:
+                self.endState = self.layout[Wins[0]]
                 return True
         return False
 
 def next_open (layout):
     return layout.find ('_')
 
-def CreateAllBoards(layout,parent): #parent is a BoardNode
-    if parent.checkwin ():
-        AllBoards[layout] = parent
+def all_opens (layout):
+    ans = []
+    for i in range (9):
+        if layout[i] == '_':
+            ans.append[i]
+    return ans
+
+def CreateAllBoards (layout, parent): #parent is a BoardNode
+    board = BoardNode (layout)
+    if board.checkwin ():
+        AllBoards[layout] = board
     if '_' not in layout: #finished board
         parent.endState = 'd'
-        AllBoards[layout] = parent
+        AllBoards[layout] = board
     else:
-        
+        opens = all_opens (layout)
+        for position in all_opens:
+            if layout.count ('x') > layout.count ('o'):
+                b = copy.copy (board)
+                parent.children.add (b)
+                b.layout[position] = 'o'
+                CreateAllBoards (b.layout, board)
+            else:
+                b = copy.copy (board)
+                parent.children.add (b)
+                b.layout[position] = 'x'
+                CreateAllBoards (b.layout, board)
 
-
+CreateAllBoards ('_________', BoardNode ('_________'))
+print (len (AllBoards))
 
     # recursive function to manufacture all BoardNode nodes and place them into the AllBoards dictionary
