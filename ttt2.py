@@ -55,17 +55,19 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
     else:
         opens = all_opens (layout)
         for position in opens:
-            if layout.count ('x') > layout.count ('o'): #o's turn
-                b = copy.copy (parent)
-                parent.children.append (b)
-                replace ('o', position, b.layout)
-                # replace ('o', position, layout)
-                # CreateAllBoards (layout, parent)
-                CreateAllBoards (b.layout, b)
-            else: #x's turn
+            b = copy.copy (parent)
+            parent.children.append (b)
+            if layout.count ('x') == 0 or layout.count ('x') == layout.count ('o'): #x's turn
                 b = copy.copy (parent)
                 parent.children.append (b)
                 replace ('x', position, b.layout)
+                # replace ('o', position, layout)
+                # CreateAllBoards (layout, parent)
+                CreateAllBoards (b.layout, b)
+            else: #o's turn
+                b = copy.copy (parent)
+                parent.children.append (b)
+                replace ('o', position, b.layout)
                 # replace ('x', position, layout)
                 # CreateAllBoards (layout, parent)
                 CreateAllBoards (b.layout, b)
