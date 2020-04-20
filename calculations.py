@@ -49,7 +49,9 @@ class Board:
         return ans
 
     def next_free (self):
-        return self.frees[0]
+        if len (self.frees) > 0:
+            return self.frees[0]
+        return None
 
     def generate_random (self, turn, num_moves): #generates a board using random values
         if num_moves > 9 or self.check_win (): #either ended in a draw or a single winner
@@ -83,45 +85,39 @@ def solve ():
         b = Board ()
         b.data[i] = 'x'
         b.frees.remove (i)
-        solve_help (b, i, i + 1, 1, all_boards)
+        print ("I: ", i, "Num: ", solve_help (b, i, b.next_free (), 1, all_boards))
+        print ("Len Allboards: ", len (all_boards))
+        print ()
+
     return (len (all_boards))
 
 def solve_help (board, start, position, turn, allboards):
-    if len (board.frees) == 0:
-        all_boards.add (board)
-        return True
-
+    if position == None:
+        return 0
     if position > 8 or board.check_win  ():
         allboards.add (board)
-        new = Board ()
-        new.data[start] = 'x'
-        solve_help (new, start, 0, 1, allboards)
+        return 1
+        # new = Board ()
+        # new.data[start] = 'x'
+        # solve_help (new, start, 0, 1, allboards)
     else:
-        if position in board.frees:
-            if turn == 0:
-                board.data[position] = 'x'
-                board.frees.remove (position)
-                copee = copy.deepcopy (board)
-                generate_start (board, start, position + 1, 1, allboards)
-                generate_start (copee, start, position + 1, 0, allboards)
-            else:
-                board.data[position] = 'o'
-                board.frees.remove (position)
-                copee = copy.deepcopy (board)
-                generate_start (board, start, position + 1, 0, allboards)
-                generate_start (copee, start, position + 1, 1, allboards)
+        if turn == 0:
+            copee = copy.deepcopy(board)
+            board.data[position] = 'x'
+            board.frees.remove (position)
+            ans = solve_help (board, start, board.next_free(), 1, allboards)
+            for p in copee.frees:
+                copee2 = copy.deepcopy (copee)
+                return 1 + ans + solve_help (copee2, start, p, 1, allboards)
         else:
-            generate_start (board, start, position + 1, turn, allboards)
-        # if turn == 0:
-        #     board.data[position] = 'x'
-        #     board.frees.remove (position)
-        #     solve_help (board, start, board.next_free(), 1, allboards)
-        #     solve_help (board, start, board.next_free(), 0, allboards)
-        # else:
-        #     board.data[position] = 'o'
-        #     board.frees.remove (position)
-        #     solve_help (board, start, board.next_free(), 0, allboards)
-        #     solve_help (board, start, board.next_free(), 1, allboards)
+            copee = copy.deepcopy(board)
+            board.data[position] = 'o'
+            board.frees.remove (position)
+            ans = solve_help (board, start, board.next_free(), 0, allboards)
+            for p in board.frees:
+                copee2 = copy.deepcopy(copee)
+                return 1 + ans + solve_help (copee2, start, p, 0, allboards)
+
 
 
 def generate_start (board, starting_position, position_now, turn, all_boards):
@@ -196,8 +192,8 @@ def unique_boards (num):
 # ab = set ()
 # generate_start (new_board, 0,0,0,ab)
 # print (len (ab))
-b = Board ()
-print (b.frees)
+
+
 # for el in ab:
 #     print (el)
 #     print ()

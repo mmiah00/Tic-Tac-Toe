@@ -1,5 +1,4 @@
 #! /usr/bin/python3
-
 import sys
 import time
 import copy
@@ -161,7 +160,7 @@ def ABC(): #answers to parts a, b, and c
                                                     else:
                                                         draws+=1
                                                     total_games+=1
-    print ("Total Games: ", total_games, "\nX Won ", x_wins, "times\nO Won ", o_wins, "times\n", draws, " draws\nDifferent Configurations: ", len (total_strings))
+    print ("Total Games: ", total_games, "\nX Won ", x_wins, "times\nO Won ", o_wins, "times\nDraw ", draws, " times\nDifferent Configurations: ", len (total_strings))
     return total_boards, total_strings
 
 def make_transformation (board, transformation):
@@ -181,13 +180,12 @@ def without_transformation(set_boards, set_strings):
     Transformations = [[Rot90],[Rot180],[Rot270],[VertFlip],[Rot90,VertFlip],[Rot180,VertFlip],[Rot270,VertFlip]]
 
     b = copy.copy (set_strings)
-    a = copy.copy (set_boards)
     ans = set()
     for board in set_boards:
-        r90 = make_transformation (board, Rot90)#.to_string()
-        r180 = make_transformation (board, Rot180)#.to_string()
-        r270 = make_transformation (board, Rot270)#.to_string()
-        vert = make_transformation (board, VertFlip)#.to_string()
+        r90 = make_transformation (board, Rot90)
+        r180 = make_transformation (board, Rot180)
+        r270 = make_transformation (board, Rot270)
+        vert = make_transformation (board, VertFlip)
         r90vert = make_transformation (r90, VertFlip)
         r180vert = make_transformation (r180, VertFlip)
         r270vert = make_transformation (r270, VertFlip)
@@ -199,89 +197,11 @@ def without_transformation(set_boards, set_strings):
         r90vert_string = r90vert.to_string ()
         r180vert_string = r180vert.to_string ()
         r270vert_string = r270vert.to_string ()
-        if r90_string not in b or r180_string not in b or r270_string not in b or vert_string not in b or r90vert_string not in b or r180vert_string not in b or r270vert_string not in b:
+        if not (r90_string in b or r180_string in b or r270_string in b or vert_string in b or r90vert_string in b or r180vert_string in b or r270vert_string in b):
             ans.add (board)
-        # if r90 in b:
-        #     ans.remove (r90)
-        # if r180 in b:
-        #     ans.remove (r180)
-        # if r270 in b:
-        #     ans.remove (r270)
-        # if vert in b:
-        #     ans.remove (vert)
-        # if r90vert in b:
-        #     ans.remove (r90vert)
-        # if r180vert in b:
-        #     ans.remove (r180vert)
-        # if r270vert in b:
-        #     ans.remove (r270vert)
-
-        # for transform in Transformations:
-        #     trans = make_transformation (board, transform)
-        #     if trans in ans:
-        #         ans.remove (trans)
+        # if r90_string in b and r180_string in b and r270_string in b and vert_string in b and r90vert_string in b and r180vert_string in b and r270vert_string in b:
+        #     ans.add (board)
     return ans
 
-    # ans = set ()
-    # for board in set_boards:
-    #     for trans in transformations:
-    #         for i in range (9):
-    #             if board.data[i] == board.data[trans[i]]:
-    #                 ans.add (board.to_string())
-    # return ans
-
-    # tr = set()
-    # length = len(set_boards)
-    # list_boards = list(set_boards)
-    # for i in range(length):
-    #     #make the 7 transformations of this board
-    #     board = list_boards[i]
-    #     r90 = ""
-    #     r180 = ""
-    #     r270 = ""
-    #     vflip = ""
-    #     vflip90 = ""
-    #     vflip180 = ""
-    #     vflip270 = ""
-    #     #make 90, 180, 270 and vert flip
-    #     for z in range(9):
-    #         r90 += board[Rot90[z]]
-    #         r180 += board[Rot180[z]]
-    #         r270 += board[Rot270[z]]
-    #         vflip += board[VertFlip[z]]
-    #     for y in range(9):
-    #         vflip90 += r90[VertFlip[y]]
-    #         vflip180 += r180[VertFlip[y]]
-    #         vflip270 += r270[VertFlip[y]]
-    #     #now check if any of these transformations are in the set
-    #     #if not, add this very board. if yes, don't add
-    #     if not((r90 in tr) or (r180 in tr) or (r270 in tr) or (vflip in tr) or (vflip90 in tr) or (vflip180 in tr) or (vflip270 in tr)):
-    #         tr.add(board)
-    # return tr
-
-def D(total_boards): #take the set from A
-    # list_of_sets = [set(), set(), set(), set(), set(), set(), set(), set(), set()]
-    # for board in total_boards:
-    #     length = 9 - board.count('_')
-    #     list_of_sets[length - 1].add(board)
-    # #now that that's set up, check for transformations
-    # to_return = 0
-    # for i in range(9):
-    #     list_of_sets[i] = without_transformation(list_of_sets[i])
-    #     to_return += len(list_of_sets[i])
-    ans = 0
-    for board in total_boards:
-        ans += len (without_transformation (board))
-    return to_return
-
-def main():
-    tb = ABC()
-    print ("D: ", len (without_transformation (tb[0], tb[1])))
-
-    #print ("A: ", total_games, "B1: ", x_wins, "B2: ", o_wins, "B3: ", draws, "C: ", len(total_strings))
-    # a, b1, b2, b3, c, total_boards = A()
-    # print("A: %d \t B1: %d \t B2: %d \t B3: %d \t C: %d"%(a, b1, b2, b3, c))
-
-    #print("D: %d"%D(tb))
-
-main()
+tb = ABC ()
+print ("Without Transformations: ", len (without_transformation (tb[0], tb[1])))
