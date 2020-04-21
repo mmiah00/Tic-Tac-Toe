@@ -57,26 +57,28 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
             opens = all_opens (layout)
             for position in opens:
                 b = copy.copy (parent)
-                parent.children.append (b)
                 if b.endState == None:
                     if layout.count ('x') == 0 or layout.count ('x') == layout.count ('o'): #x's turn
                         temp = b.layout
                         b.layout = replace ('x', position, temp)
+                        parent.children.append (b)
                         CreateAllBoards (b.layout, b)
                     else: #o's turn
                         temp = b.layout
                         b.layout = replace ('o', position, temp)
+                        parent.children.append (b)
                         CreateAllBoards (b.layout, b)
             AllBoards[layout] = parent
-
 
 CreateAllBoards ('_________', BoardNode ('_________'))
 x_wins = 0
 o_wins = 0
 draws = 0
 nones = 0
+total_children = 0
 for key in AllBoards.keys ():
     n = AllBoards[key]
+    total_children += len (n.children)
     if n.endState == 'x':
         x_wins += 1
     elif n.endState == 'o':
@@ -86,11 +88,12 @@ for key in AllBoards.keys ():
     else:
         nones += 1
 
-print ("Total Boards ", len (AllBoards))
-print ("X Wins       ", x_wins)
-print ("O Wins       ", o_wins)
-print ("Draws        ", draws)
-print ("Nones        ", nones)
+print ("Total Boards   ", len (AllBoards))
+print ("Total Children ", total_children)
+print ("X Wins         ", x_wins)
+print ("O Wins         ", o_wins)
+print ("Draws          ", draws)
+print ("Nones          ", nones)
 #print ("total: ", (x_wins + o_wins + draws + nones))
 
 
