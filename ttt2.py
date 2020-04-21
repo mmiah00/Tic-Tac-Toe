@@ -30,7 +30,7 @@ class BoardNode:
 
     def checkwin (self):
         for clique in Wins:
-            if self.layout[clique[0]] == self.layout[clique[1]] and self.layout[clique[1]] == self.layout[clique[2]] and self.layout[clique[0]] == self.layout[clique[2]]:
+            if self.layout[clique[0]] != "_" and self.layout[clique[0]] == self.layout[clique[1]] and self.layout[clique[1]] == self.layout[clique[2]] and self.layout[clique[0]] == self.layout[clique[2]]:
                 self.endState = self.layout[clique[0]]
                 return True
         return False
@@ -67,24 +67,23 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
             for position in opens:
                 b = copy.copy (parent)
                 parent.children.append (b)
-                if layout.count ('x') == 0 or layout.count ('x') == layout.count ('o'): #x's turn
-                    temp = b.layout
-                    b.layout = replace ('x', position, temp)
-                    CreateAllBoards (b.layout, b)
-                else: #o's turn
-                    temp = b.layout
-                    b.layout = replace ('o', position, temp)
-                    CreateAllBoards (b.layout, b)
+                if b.endState == None:
+                    if layout.count ('x') == 0 or layout.count ('x') == layout.count ('o'): #x's turn
+                        temp = b.layout
+                        b.layout = replace ('x', position, temp)
+                        CreateAllBoards (b.layout, b)
+                    else: #o's turn
+                        temp = b.layout
+                        b.layout = replace ('o', position, temp)
+                        CreateAllBoards (b.layout, b)
             if parent.endState == 'd':
                 draws.add (layout)
             elif parent.endState == 'x':
                 x_wins.add (layout)
             elif parent.endState == 'o':
                 o_wins.add (layout)
-            else:
-                nones.add (layout)
             AllBoards[layout] = parent
-            return layout
+
 
 CreateAllBoards ('_________', BoardNode ('_________'))
 # for key in AllBoards.keys ():
