@@ -1,3 +1,4 @@
+
 #! /usr/bin/python3
 import sys
 import time
@@ -27,6 +28,21 @@ class BoardNode:
     def print_me(self):
         print ('layout:',self.layout, 'endState:',self.endState)
         print ('children:',self.children)
+
+    def print_board (self):
+        ans = ''
+        for position in range (9):
+            turn = self.layout[position]
+            if turn == '_':
+                turn = " "
+            if position == 0 or position == 1 or position == 3 or position == 4 or position == 6 or position == 7:
+                ans += " " + turn + " |"
+            else:
+                if position != 8:
+                    ans += " " + turn + "\n-----------\n"
+                else:
+                    ans += " " + turn
+        print (ans)
 
     def checkwin (self):
         for clique in Wins:
@@ -76,21 +92,33 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
                         temp = b.layout
                         b.layout = replace ('o', position, temp)
                         CreateAllBoards (b.layout, b)
-            if parent.endState == 'd':
-                draws.add (layout)
-            elif parent.endState == 'x':
-                x_wins.add (layout)
-            elif parent.endState == 'o':
-                o_wins.add (layout)
+                    AllBoards[b.layout] = b
+            if b.endState == 'd':
+                draws.add (b.layout)
+            elif b.endState == 'x':
+                x_wins.add (b.layout)
+            elif b.endState == 'o':
+                o_wins.add (b.layout)
+            else:
+                nones.add (b.layout)
             AllBoards[layout] = parent
 
 
 CreateAllBoards ('_________', BoardNode ('_________'))
-# for key in AllBoards.keys ():
-#     n = AllBoards[key]
-#     print (n.endState)
+# k = list (AllBoards.keys ())
+# layout = k[100]
+# print (layout)
+# node = AllBoards[layout]
+# node.print_board()
+# print (len (node.children))
+
+a = len (x_wins)
+b = len (o_wins)
+c = len (draws)
+d = len (nones)
 print ("Total Boards ", len (AllBoards))
-print ("X Wins       ", len (x_wins))
-print ("O Wins       ", len (o_wins))
-print ("Draws        ", len (draws))
-print ("Nones        ", len (nones))
+print ("X Wins       ", a)
+print ("O Wins       ", b)
+print ("Draws        ", c)
+print ("Nones        ", d)
+print (a + b + c + d)
