@@ -11,10 +11,6 @@ import copy
 # layouts look like "_x_ox__o_"
 
 Wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-x_wins = set ()
-o_wins = set ()
-draws = set ()
-nones = set ()
 
 AllBoards = {} # this is a dictionary with key = a layout, and value = its corresponding BoardNode
 
@@ -54,13 +50,8 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
     if layout not in AllBoards.keys (): #so it doesn't waste time w duplicates
         if parent.checkwin ():
             AllBoards[layout] = parent
-            if parent.endState == 'x':
-                x_wins.add (layout)
-            else:
-                o_wins.add (layout)
         if '_' not in layout: #board w all spaces filled
             parent.endState = 'd'
-            draws.add (layout)
             AllBoards[layout] = parent
         else:
             opens = all_opens (layout)
@@ -76,38 +67,31 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
                         temp = b.layout
                         b.layout = replace ('o', position, temp)
                         CreateAllBoards (b.layout, b)
-            if parent.endState == 'd':
-                draws.add (layout)
-            elif parent.endState == 'x':
-                x_wins.add (layout)
-            elif parent.endState == 'o':
-                o_wins.add (layout)
-            else:
-                nones.add (layout)
             AllBoards[layout] = parent
 
 
 CreateAllBoards ('_________', BoardNode ('_________'))
-x = 0
-o = 0
-d = 0
-no = 0
+x_wins = 0
+o_wins = 0
+draws = 0
+nones = 0
 for key in AllBoards.keys ():
     n = AllBoards[key]
     if n.endState == 'x':
-        x += 1
+        x_wins += 1
     elif n.endState == 'o':
-        o += 1
+        o_wins += 1
     elif n.endState == 'd':
-        d += 1
+        draws += 1
     else:
-        no += 1
+        nones += 1
 
-print ("x: ", x)
-print ("o: ", o)
-print ("d: ", d)
-print ("n: ", no)
-print ("total: ", (x + o + d + no))
+print ("Total Boards ", len (AllBoards))
+print ("X Wins       ", x_wins)
+print ("O Wins       ", o_wins)
+print ("Draws        ", draws)
+print ("Nones        ", nones)
+#print ("total: ", (x_wins + o_wins + draws + nones))
 
 
 # print ("Total Boards ", len (AllBoards))
