@@ -51,38 +51,40 @@ def replace (character, position, layout):
     return "".join (s)
 
 def CreateAllBoards (layout, parent): #parent is a BoardNode
-    if parent.checkwin ():
-        AllBoards[layout] = parent
-        if parent.endState == 'x':
-            x_wins.add (layout)
-        else:
-            o_wins.add (layout)
-    if '_' not in layout: #board w all spaces filled
-        parent.endState = 'd'
-        draws.add (layout)
-        AllBoards[layout] = parent
-    else:
-        opens = all_opens (layout)
-        for position in opens:
-            b = copy.copy (parent)
-            parent.children.append (b)
-            if layout.count ('x') == 0 or layout.count ('x') == layout.count ('o'): #x's turn
-                temp = b.layout
-                b.layout = replace ('x', position, temp)
-                CreateAllBoards (b.layout, b)
-            else: #o's turn
-                temp = b.layout
-                b.layout = replace ('o', position, temp)
-                CreateAllBoards (b.layout, b)
-        if parent.endState == 'd':
+    if layout not in AllBoards.keys (): #so it doesn't waste time w duplicates
+        if parent.checkwin ():
+            AllBoards[layout] = parent
+            if parent.endState == 'x':
+                x_wins.add (layout)
+            else:
+                o_wins.add (layout)
+        if '_' not in layout: #board w all spaces filled
+            parent.endState = 'd'
             draws.add (layout)
-        elif parent.endState == 'x':
-            x_wins.add (layout)
-        elif parent.endState == 'o':
-            o_wins.add (layout)
+            AllBoards[layout] = parent
         else:
-            nones.add (layout)
-        AllBoards[layout] = parent
+            opens = all_opens (layout)
+            for position in opens:
+                b = copy.copy (parent)
+                parent.children.append (b)
+                if layout.count ('x') == 0 or layout.count ('x') == layout.count ('o'): #x's turn
+                    temp = b.layout
+                    b.layout = replace ('x', position, temp)
+                    CreateAllBoards (b.layout, b)
+                else: #o's turn
+                    temp = b.layout
+                    b.layout = replace ('o', position, temp)
+                    CreateAllBoards (b.layout, b)
+            if parent.endState == 'd':
+                draws.add (layout)
+            elif parent.endState == 'x':
+                x_wins.add (layout)
+            elif parent.endState == 'o':
+                o_wins.add (layout)
+            else:
+                nones.add (layout)
+            AllBoards[layout] = parent
+            return layout
 
 CreateAllBoards ('_________', BoardNode ('_________'))
 # for key in AllBoards.keys ():
