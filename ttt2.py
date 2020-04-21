@@ -11,6 +11,9 @@ import copy
 # layouts look like "_x_ox__o_"
 
 Wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+x_wins = set ()
+o_wins = set ()
+draws = set ()
 
 AllBoards = {} # this is a dictionary with key = a layout, and value = its corresponding BoardNode
 
@@ -50,27 +53,34 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
     node = BoardNode (layout)
     if node.checkwin ():
         AllBoards[layout] = node
+        if node.endState == 'x':
+            x_wins.add (layout)
+        else:
+            o_wins.add (layout)
     if '_' not in layout: #board w all spaces filled
         node.endState = 'd'
+        draws.add (layout)
         AllBoards[layout] = node
     else:
         opens = all_opens (layout)
         for position in opens:
-            b = copy.copy (parent)
-            parent.children.append (b)
+            b = copy.copy (node)
+            node.children.append (b)
             if layout.count ('x') == 0 or layout.count ('x') == layout.count ('o'): #x's turn
-                b = copy.copy (parent)
-                parent.children.append (b)
-                b.layout = replace ('x', position, b.layout)
+                temp = b.layout
+                b.layout = replace ('x', position, temp)
                 CreateAllBoards (b.layout, b)
             else: #o's turn
-                b = copy.copy (parent)
-                parent.children.append (b)
-                b.layout = replace ('o', position, b.layout)
+                temp = b.layout
+                b.layout = replace ('o', position, temp)
                 CreateAllBoards (b.layout, b)
+        AllBoards[layout] = parent
 
 CreateAllBoards ('_________', BoardNode ('_________'))
+# for key in AllBoards.keys ():
+#     n = AllBoards[key]
+#     print (n.endState)
 print ("Total Boards ", len (AllBoards))
-print ("X Wins       ", len (x_wins))
-print ("O Wins       ", len (o_wins))
-print ("Draws        ", len (draws))
+# print ("X Wins       ", len (x_wins))
+# print ("O Wins       ", len (o_wins))
+# print ("Draws        ", len (draws))
