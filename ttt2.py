@@ -46,22 +46,13 @@ def replace (character, position, layout):
     s[position] = character
     return "".join (s)
 
-# def CreateAllBoards (layout, parent): #parent is a BoardNode
-#     if parent.checkwin ():
-#         AllBoards[layout] = parent
-#     if '_' not in layout: #board w all spaces filled
-#         parent.endState = 'd'
-#         AllBoards[layout] = parent
-#     else:
-#         for i in range (9):
-#             replace ('x', i, layout)
-
 def CreateAllBoards (layout, parent): #parent is a BoardNode
-    if parent.checkwin ():
-        AllBoards[layout] = parent
+    node = BoardNode (layout)
+    if node.checkwin ():
+        AllBoards[layout] = node
     if '_' not in layout: #board w all spaces filled
-        parent.endState = 'd'
-        AllBoards[layout] = parent
+        node.endState = 'd'
+        AllBoards[layout] = node
     else:
         opens = all_opens (layout)
         for position in opens:
@@ -71,18 +62,15 @@ def CreateAllBoards (layout, parent): #parent is a BoardNode
                 b = copy.copy (parent)
                 parent.children.append (b)
                 b.layout = replace ('x', position, b.layout)
-                # l = replace ('o', position, layout)
-                # CreateAllBoards (l, parent)
                 CreateAllBoards (b.layout, b)
             else: #o's turn
                 b = copy.copy (parent)
                 parent.children.append (b)
                 b.layout = replace ('o', position, b.layout)
-                # l = replace ('x', position, layout)
-                # CreateAllBoards (l, parent)
                 CreateAllBoards (b.layout, b)
 
 CreateAllBoards ('_________', BoardNode ('_________'))
-print (len (AllBoards))
-
-    # recursive function to manufacture all BoardNode nodes and place them into the AllBoards dictionary
+print ("Total Boards ", len (AllBoards))
+print ("X Wins       ", len (x_wins))
+print ("O Wins       ", len (o_wins))
+print ("Draws        ", len (draws))
