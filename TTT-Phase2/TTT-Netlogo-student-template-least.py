@@ -89,22 +89,32 @@ def next_open (board_node):
 
 def CalcBestMove_help (board_node, position, move_to_win):
     if board_node.state == 'x' or board_node.state == 'o': #a win
-        return board_node.last_move
+        return True
+    if board_node.state == None:
+        return False
     if board_node.move_to_win == None:
         board_node.move_to_win = 1
     else:
-        c = copy.copy (board_node)
-        c.board[position] = WhoseMove (board_node)[0]
-        c.last_move = position
-        c.move_to_win += 1
-        return CalcBestMove_help (c, next_open (c), c.move_to_win)
+        board_node.board[position] = WhoseMove (board_node)[0]
+        board_node.last_move = position
+        board_node.move_to_win += 1
+        return CalcBestMove_help (board_node, next_open (board_node), board_node.move_to_win)
 
 def CalcBestMove(board_node):
     '''  updates this board_node with correct values for state, moves_to_state, and best_move
     (This is the engine.)'''
     i = next_open (board_node)
-    move = CalcBestMove_help (board_node, i, board_node.move_to_win)
-    board_node.best_move = move
+    c = copy.copy (board_node)
+    while (i != -1):
+        if CalcBestMove_help (c, i, c.move_to_win):
+            board_node.best_move = i
+            board_node.moves_to_state = c.moves_to_state
+            return 
+        else:
+            i = next_open (board_node)
+
+    # move = CalcBestMove_help (board_node, i, board_node.move_to_win)
+    # board_node.best_move = move
 
 
     ##############################################
