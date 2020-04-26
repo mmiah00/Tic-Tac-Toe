@@ -20,7 +20,7 @@ class Tboard:
         # state is 'o' if win for 'o'
         # state is None if we haven't figured this out yet
         self.state = None
-        
+
         # moves_to_state is how many moves from here to the state if best moves are taken
         # moves_to_state == 0 if this board is actually a final board in the game
         # moves_to_state == None if we haven't figure this out yet
@@ -40,18 +40,18 @@ def FigureItOut(board):
     if moves_to_state == 0 then we're at the end of the game
     and state is the expected final state: 'x', 'o', or 'd', for X-winning, O-winning, or Draw'''
     AllBoards.clear()
-    
+
     root = Tboard(board,None)
     AllBoards[board] = root
 
     # Step 1:
     # Create the board tree starting from this root.
     FindAllBoards(root)
-    
+
     # Step 2:
     # now traverse the game tree (depth first), filling in best_move, moves_to_state and state
     CalcBestMove(root)
-    
+
     return [root.best_move, root.moves_to_state, root.state]
 
 def FindAllBoards(board_node):
@@ -59,12 +59,12 @@ def FindAllBoards(board_node):
     into the dictionary AllBoards.  Uses AllBoards to prevent dublicate boards.  This should
     create a tree of maximum 5478 boards if we start from the empty board.  But usually we won't
     start from the empty board'''
-    
+
     if board_node in AllBoards:
         return
 
     AllBoards[board_node.board] = board_node
-    
+
     # is this a final board?
     endboard = IsEndBoard(board_node.board)  # returns 'x' or 'o' or 'd' if final, else None
     if endboard is not None:   # this board is a win for 'x' or 'o' or a draw
@@ -83,15 +83,34 @@ def FindAllBoards(board_node):
             board_node.children.append(child_node)
             FindAllBoards(child_node)
     return
-        
+
+def next_open (board_node):
+    return board_node.board.find ('_')
+
+def CalcBestMove_help (board_node, position, move_to_win):
+    if board_node.state == 'x' or board_node.state == 'o': #a win
+        return board_node.last_move
+    if board_node.move_to_win == None:
+        board_node.move_to_win = 1
+    else:
+        c = copy.copy (board_node)
+        c.board[position] = WhoseMove (board_node)[0]
+        c.last_move = position
+        c.move_to_win += 1
+        return CalcBestMove_help (c, next_open (c), c.move_to_win)
+
 def CalcBestMove(board_node):
     '''  updates this board_node with correct values for state, moves_to_state, and best_move
     (This is the engine.)'''
+    i = next_open (board_node)
+    move = CalcBestMove_help (board_node, i, board_node.move_to_win)
+    board_node.best_move = move
+
 
     ##############################################
     #   Your excellent code here
     ##############################################
-        
+
 def WhoseMove(board):
     '''returns the player (either 'x' or 'o') and also opponent'''
     if board.count('x') == board.count('o'):
@@ -116,8 +135,3 @@ def PrintBoardNode(node):
     print('best_move',node.best_move)
     for child_node in node.children:
         print('child',child_node.lastmove,child_node.board)
-
-
-    
-    
-    
