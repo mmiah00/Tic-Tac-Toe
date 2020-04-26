@@ -1,3 +1,4 @@
+import copy
 # TicTacToe - perfect competitor code outline
 
 # Below, any  variable called "board" contains a board layout string of 9 chars or 'x', 'o' and '_'
@@ -87,35 +88,18 @@ def FindAllBoards(board_node):
 def next_open (board_node):
     return board_node.board.find ('_')
 
-def CalcBestMove_help (board_node, position, move_to_win):
-    if board_node.state == 'x' or board_node.state == 'o': #a win
-        return True
-    if board_node.state == None:
-        return False
-    if board_node.move_to_win == None:
-        board_node.move_to_win = 1
-    else:
-        board_node.board[position] = WhoseMove (board_node)[0]
-        board_node.last_move = position
-        board_node.move_to_win += 1
-        return CalcBestMove_help (board_node, next_open (board_node), board_node.move_to_win)
-
 def CalcBestMove(board_node):
+    global AllBoards
     '''  updates this board_node with correct values for state, moves_to_state, and best_move
     (This is the engine.)'''
-    i = next_open (board_node)
-    c = copy.copy (board_node)
-    while (i != -1):
-        if CalcBestMove_help (c, i, c.move_to_win):
-            board_node.best_move = i
-            board_node.moves_to_state = c.moves_to_state
-            return 
-        else:
-            i = next_open (board_node)
-
-    # move = CalcBestMove_help (board_node, i, board_node.move_to_win)
-    # board_node.best_move = move
-
+    FindAllBoards (board_node)
+    boards = copy.copy (AllBoards)
+    AllBoards = dict ()
+    targets = []
+    #finds all the boards that are a win
+    for b in boards.keys ():
+        if boards[b].best_move == -1:
+            target.append (boards[b])
 
     ##############################################
     #   Your excellent code here
@@ -145,3 +129,5 @@ def PrintBoardNode(node):
     print('best_move',node.best_move)
     for child_node in node.children:
         print('child',child_node.lastmove,child_node.board)
+
+CalcBestMove (Tboard("__x______", 2))
