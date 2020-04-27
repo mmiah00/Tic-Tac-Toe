@@ -88,19 +88,58 @@ def FindAllBoards(board_node):
 def next_open (board_node):
     return board_node.board.find ('_')
 
+def remove_nones (dict):
+    ans = {}
+    for key in dict.keys ():
+        if dict[key].state != None:
+            ans[key] = dict[key]
+    return ans
+
+def bestmove_help (board_node, position, num_moves, dict): #taken from FindAllBoards
+    if board_node in dict:
+        return
+
+    dict[board_node.board] = board_node
+
+    endboard = IsEndBoard(board_node.board)  # returns 'x' or 'o' or 'd' if final, else None
+    if endboard is not None:   # this board is a win for 'x' or 'o' or a draw
+        board_node.state = endboard
+        board_node.moves_to_state = num_moves
+        board_node.best_move = position
+        return
+
+    # Now recurse through all the children:
+    this_board = board_node.board
+    player = board_node.player
+    for i in range(9):
+        if this_board[i] == '_':
+            child_board = this_board[:i]+player+this_board[i+1:]
+            child_node = Tboard(child_board,i)
+            board_node.children.append(child_node)
+            bestmove_help(child_node, i, num_moves + 1, dict)
+    return
+
 def CalcBestMove(board_node):
-    global AllBoards
     '''  updates this board_node with correct values for state, moves_to_state, and best_move
     (This is the engine.)'''
-    FindAllBoards (board_node)
-    boards = copy.copy (AllBoards)
-    AllBoards = dict ()
-    targets = []
-    #finds all the boards that are a win
-    for b in boards.keys ():
-        if boards[b].best_move == -1:
-            target.append (boards[b])
-
+    future_boards = {}
+    c = copy.copy (board_node)
+    bestmove_help (c, c.lastmove, 0, future_boards)
+    #future_boards = remove_nones (future_boards)
+    least_moves = [None, None] #first is the instance of tboard, next is the best_move
+    for key in future_boards.keys ():
+        b = future_boards[key]
+        if b.state != None:
+            if least_moves[0] == None:
+                least_moves = [b, b.best_move]
+            else:
+                if least_moves[1] > b.moves_to_state:
+                    least_moves = [b, b.best_move]
+    board_node.state = least_moves[0].state
+    board_node.moves_to_state = least_moves[0].moves_to_state
+    board_node.best_move = least_moves[1]
+    # print (least_moves[0].board)
+    # print (least_moves[1])
     ##############################################
     #   Your excellent code here
     ##############################################
@@ -130,4 +169,15 @@ def PrintBoardNode(node):
     for child_node in node.children:
         print('child',child_node.lastmove,child_node.board)
 
-CalcBestMove (Tboard("__x______", 2))
+a = Tboard("__x______", 2)
+CalcBestMove (a)
+# dict = {}
+# bestmove_help (a, 2, 0, dict)
+# dict = remove_nones (dict)
+# for key in dict.keys():
+#     print ("Board          ", key)
+#     print ("Moves to State ", dict[key].moves_to_state)
+#     print ("State          ", dict[key].state)
+#     #print ("Last Move      ", dict[key].last_move)
+#     print ("Best Move      ", dict[key].best_move)
+#     print ()
