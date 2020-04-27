@@ -131,14 +131,16 @@ def CalcBestMove(board_node):
     least_moves = [] #list of boards with the least number of moves to state
     for key in future_boards.keys ():
         b = future_boards[key]
-        if b.state != None:
+        if b.state == WhoseMove (board_node.board)[0] and b.state != None:
             if num == None:
-                num = b.moves_to_state
-                least_moves.append (b)
-            else:
-                if num > b.moves_to_state:
+                if board_node.board[b.best_move] == '_':
                     num = b.moves_to_state
                     least_moves.append (b)
+            else:
+                if board_node.board[b.best_move] == '_':
+                    if num > b.moves_to_state:
+                        num = b.moves_to_state
+                        least_moves.append (b)
     r = random.randint (0, len (least_moves))
     node = least_moves[r]
     board_node.state = node.state
