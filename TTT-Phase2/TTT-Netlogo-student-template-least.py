@@ -1,4 +1,5 @@
 import copy
+import random
 # TicTacToe - perfect competitor code outline
 
 # Below, any  variable called "board" contains a board layout string of 9 chars or 'x', 'o' and '_'
@@ -126,18 +127,28 @@ def CalcBestMove(board_node):
     c = copy.copy (board_node)
     bestmove_help (c, c.lastmove, 0, future_boards)
     #future_boards = remove_nones (future_boards)
-    least_moves = [None, None] #first is the instance of tboard, next is the best_move
+    num = None #least number of moves to state
+    least_moves = [] #list of boards with the least number of moves to state
     for key in future_boards.keys ():
         b = future_boards[key]
         if b.state != None:
-            if least_moves[0] == None:
-                least_moves = [b, b.best_move]
+            if num == None:
+                num = b.moves_to_state
+                least_moves.append (b)
             else:
-                if least_moves[1] > b.moves_to_state:
-                    least_moves = [b, b.best_move]
-    board_node.state = least_moves[0].state
-    board_node.moves_to_state = least_moves[0].moves_to_state
-    board_node.best_move = least_moves[1]
+                if num > b.moves_to_state:
+                    num = b.moves_to_state
+                    least_moves.append (b)
+    r = random.randint (0, len (least_moves))
+    node = least_moves[r]
+    board_node.state = node.state
+    board_node.moves_to_state = node.moves_to_state
+    board_node.best_move = node.best_move
+    # print ("Board          ", node.board)
+    # print ("State          ", board_node.state)
+    # print ("Moves to State ", board_node.moves_to_state)
+    # print ("Best Move      ", board_node.best_move)
+
     # print (least_moves[0].board)
     # print (least_moves[1])
     ##############################################
