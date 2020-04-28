@@ -126,26 +126,29 @@ def CalcBestMove(board_node):
     future_boards = {}
     c = copy.copy (board_node)
     bestmove_help (c, c.lastmove, 0, future_boards)
+    FindAllBoards (board_node)
     #future_boards = remove_nones (future_boards)
-    num = None #least number of moves to state
+    num = 8 #least number of moves to state
     least_moves = [] #list of boards with the least number of moves to state
     for key in future_boards.keys ():
         b = future_boards[key]
-        if b.state == WhoseMove (board_node.board)[0] and b.state != None:
-            if num == None:
-                if board_node.board[b.best_move] == '_':
+        if b.state != None:
+            if board_node.board[b.best_move] == '_':
+                if b.moves_to_state < num:
                     num = b.moves_to_state
                     least_moves.append (b)
-            else:
-                if board_node.board[b.best_move] == '_':
-                    if num > b.moves_to_state:
-                        num = b.moves_to_state
-                        least_moves.append (b)
-    r = random.randint (0, len (least_moves))
+                    for board in least_moves:
+                        if board.moves_to_state != num:
+                            least_moves.remove (board)
+
+    r = random.randint (0, len (least_moves) - 1)
     node = least_moves[r]
     board_node.state = node.state
     board_node.moves_to_state = node.moves_to_state
     board_node.best_move = node.best_move
+    # for child in board_node.children:
+    #     CalcBestMove (child)
+
     # print ("Board          ", node.board)
     # print ("State          ", board_node.state)
     # print ("Moves to State ", board_node.moves_to_state)
@@ -153,10 +156,7 @@ def CalcBestMove(board_node):
 
     # print (least_moves[0].board)
     # print (least_moves[1])
-    ##############################################
-    #   Your excellent code here
-    ##############################################
-
+    
 def WhoseMove(board):
     '''returns the player (either 'x' or 'o') and also opponent'''
     if board.count('x') == board.count('o'):
@@ -167,8 +167,8 @@ def IsEndBoard(board):
     for awin in wins:
         if board[awin[0]] != '_' and board[awin[0]] == board[awin[1]] and board[awin[1]] == board[awin[2]]:
             return board[awin[0]]
-        if board.count('_') == 0:
-            return 'd'
+    if board.count('_') == 0:
+        return 'd'
     return None
 
 def PrintBoardNode(node):
@@ -182,8 +182,13 @@ def PrintBoardNode(node):
     for child_node in node.children:
         print('child',child_node.lastmove,child_node.board)
 
-a = Tboard("__x______", 2)
+a = Tboard("_o_x_x___", 3)
 CalcBestMove (a)
+print ()
+print (a.best_move)
+print (a.moves_to_state)
+
+
 # dict = {}
 # bestmove_help (a, 2, 0, dict)
 # dict = remove_nones (dict)
