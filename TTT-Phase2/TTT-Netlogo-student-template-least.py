@@ -103,7 +103,7 @@ def bestmove_help (board_node, position, num_moves, dict): #taken from FindAllBo
     dict[board_node.board] = board_node
 
     endboard = IsEndBoard(board_node.board)  # returns 'x' or 'o' or 'd' if final, else None
-    if endboard is not None and endboard == WhoseMove (board_node.board)[0]:   # this board is a win for 'x' or 'o' or a draw
+    if endboard is not None: #and endboard == WhoseMove (board_node.board)[1]:   # this board is a win for 'x' or 'o' or a draw
         board_node.state = endboard
         board_node.moves_to_state = num_moves
         board_node.best_move = position
@@ -120,34 +120,61 @@ def bestmove_help (board_node, position, num_moves, dict): #taken from FindAllBo
             bestmove_help(child_node, i, num_moves + 1, dict)
     return
 
+def minimax (board, depth, maximizing_player):
+    if depth == 0 or IsEndBoard != None:
+        return board.moves_to_state
+    if maximizing_player:
+        min_moves = float ('inf')
+        for child in board.children:
+            moves = minimax (child, depth - 1, False)
+            min_moves = min (min_moves, moves)
+        return min_moves
+    else:
+        max_moves = float ('-inf')
+        for child in board.children:
+            moves = minimax (child, depth - 1, True)
+            max_moves = max (max_moves, moves)
+        return max_moves
 def CalcBestMove(board_node):
     '''  updates this board_node with correct values for state, moves_to_state, and best_move
     (This is the engine.)'''
     future_boards = {}
-    c = copy.copy (board_node)
-    bestmove_help (c, c.lastmove, 0, future_boards)
+    bestmove_help (board_node, board_node.lastmove, 0, future_boards)
 
-    #FindAllBoards (board_node)
-    #future_boards = remove_nones (future_boards)
-
-    num = 8 #least number of moves to state
-    least_moves = [] #list of boards with the least number of moves to state
     for key in future_boards.keys ():
         b = future_boards[key]
-        if b.state != None:
-            if board_node.board[b.best_move] == '_':
-                if b.moves_to_state < num:
-                    num = b.moves_to_state
-                    least_moves.append (b)
-                    for board in least_moves:
-                        if board.moves_to_state != num:
-                            least_moves.remove (board)
-    #print (len (least_moves))
-    r = random.randint (0, len (least_moves) - 1)
-    node = least_moves[r]
-    board_node.state = node.state
-    board_node.moves_to_state = node.moves_to_state
-    board_node.best_move = node.best_move
+        i = 0
+        while (i < 5):
+            bestmove = minimax (b, i, True)
+            print (i, " ", bestmove)
+            i +=1
+        print ()
+
+    # future_boards = {}
+    # c = copy.copy (board_node)
+    # bestmove_help (c, c.lastmove, 0, future_boards)
+    #
+    # #FindAllBoards (board_node)
+    # #future_boards = remove_nones (future_boards)
+    #
+    # num = 8 #least number of moves to state
+    # least_moves = [] #list of boards with the least number of moves to state
+    # for key in future_boards.keys ():
+    #     b = future_boards[key]
+    #     if b.state != None:
+    #         if board_node.board[b.best_move] == '_':
+    #             if b.moves_to_state < num:
+    #                 num = b.moves_to_state
+    #                 least_moves.append (b)
+    #                 for board in least_moves:
+    #                     if board.moves_to_state != num:
+    #                         least_moves.remove (board)
+    # #print (len (least_moves))
+    # r = random.randint (0, len (least_moves) - 1)
+    # node = least_moves[r]
+    # board_node.state = node.state
+    # board_node.moves_to_state = node.moves_to_state
+    # board_node.best_move = node.best_move
 
     # print ("Board          ", node.board)
     # print ("State          ", board_node.state)
@@ -182,11 +209,11 @@ def PrintBoardNode(node):
     for child_node in node.children:
         print('child',child_node.lastmove,child_node.board)
 
-a = Tboard("_ox_____x", 8)
+a = Tboard("_x_______", 1)
 CalcBestMove (a)
-print ()
-print ("Best Move      ", a.best_move)
-print ("Moves to State ", a.moves_to_state)
+# print ()
+# print ("Best Move      ", a.best_move)
+# print ("Moves to State ", a.moves_to_state)
 
 
 # dict = {}
